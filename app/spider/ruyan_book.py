@@ -2,6 +2,7 @@ from app.libs.bhttp import HTTP
 
 
 class RuYanBook:
+    # 模型层 MVC的M层
     # isbnUrl = 'https://api.douban.com/v2/book/isbn/{}'
     isbnUrl = 'http://t.yushu.im/v2/book/isbn/{}'
     keyWordUrl = 'http://t.yushu.im/v2/book/search?q={}&count={}&start={}'
