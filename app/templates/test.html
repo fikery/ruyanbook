@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{#Jinjia2#}
+{% block content %}
+    {# 继承区块 #}
+    {{ super() }}
+    {# 填充内容 #}
+    {{data.name}}
+    {# 条件判断 #}
+    {% if data.age>=18 %}
+        {{data.age}}
+    {% else %}
+        未成年
+    {% endif %}
+    {# 过滤器 #}
+    {{ data.names | default('无名氏') }}
+    {{ data.name | length() }}
+    {# 消息闪现 #}
+    {% set message = get_flashed_messages() %}
+    {{ message }}
+    {# 遍历字典 #}
+    {% for k,v in data.items() %}
+        <div>-{{ k }}:{{ v }}</div>
+    {% endfor %}
+
+{% endblock %}

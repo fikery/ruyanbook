@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pending.css')}}">
+{% endblock %}
+{% block content %}
+    <div class="row module-title">
+        <div style="margin-top:30px;" class="col-md-2">
+            <span class='sub-title'>交易记录</span>
+        </div>
+    </div>
+    {% for fire in fires %}
+        <div style="margin-top:20px;" class="row fire-container">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <img class="book-img-small shadow" src="{{ fire.bookImg }}">
+                    </div>
+                    <div style="margin-left:-30px;"
+                         class="col-md-8 flex-vertical description">
+                        <div><span>书籍名：</span><span>{{ fire.bookTitle }}</span></div>
+                        <div><span>作者：</span><span>{{ fire.bookAuthor }}</span></div>
+                        <div><span>发起日期：</span><span>{{ fire.date }}</span></div>
+                        <div>
+                            {% if fire.identify == 'requester' %}
+                                <span>向他请求：</span>
+                            {% else %}
+                                <span>请求者：</span>
+                            {% endif %}
+                            <span>{{ fire.operator }}</span>
+                        </div>
+                        <div><span>状态：</span><span
+                                class="status-color">{{ fire.statusStr }}</span></div>
+                        <div><span>邮寄地址：</span><span
+                                class="space">{{ fire.recipientName }}</span><span>{{ fire.address }}</span>
+                        </div>
+                        <div><span>联系电话：</span><span>{{ fire.mobile }}</span></div>
+                    </div>
+                    <div class="col-md-2 flex-vertical">
+                        {% if fire.identify == 'gifter' %}
+                            {% if fire.status.value == 1 %}
+                                <a href="{{ url_for('web.mailed_fire', fid=fire.fireId) }}">
+                                    <span class="btn-normal">已邮寄</span>
+                                </a>
+                                <a style="margin-top:20px;" href="{{ url_for('web.reject_fire', fid=fire.fireId) }}">
+                                    <span class="btn-shadow">拒&nbsp;&nbsp;&nbsp;绝</span>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                        {% if fire.identify == 'requester' %}
+                            {% if fire.status.value == 1 %}
+                                <a href="{{ url_for('web.redraw_fire', fid=fire.fireId) }}">
+                                        <span class="btn-normal">撤 销</span>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div style="margin-top:20px;" class="row message-container">
+                    <div class="col-md-12">
+                        {% if fire.identify == 'receiver' %}
+                            {% set message_flag = '他的留言：' %}
+                        {% else %}
+                            {% set message_flag = '你的留言：' %}
+                        {% endif %}
+                        <p><span
+                                class="message-flag">{{ message_flag }}</span>
+                            <span>{{ fire.message }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
