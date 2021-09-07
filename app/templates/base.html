@@ -6,6 +6,8 @@
 {% endblock %}
 
 {% block head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
     <link rel="stylesheet"
           href="{{ url_for('static', filename='3rd/ui/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
@@ -20,7 +22,9 @@
             <form class="form-inline" action="{{ url_for('web.search') }}" method="get">
                 <div class="flex-vertical-center-height">
                     <div class="col-md-2">
-                        <img src="{{url_for('static', filename='images/logo1.png')}}"/>
+                        <a href="/">
+                            <img src="{{url_for('static', filename='images/logo1.png')}}">
+                        </a>
                     </div>
                     <div style="margin-left:30px;" class="col-md-8 input-group">
                         <input name="q" type="text" placeholder="ISBN、图书名称"
@@ -40,14 +44,14 @@
                     <a id="recent" href="{{ url_for('web.index') }}"
                        class="flex-vertical-hor-center">
                         <img src="{{ url_for('static', filename='images/upload.png') }}"/>
-                        <span>最近上传</span>
+                        <span>最近上架</span>
                     </a>
                 </div>
                 <div class="col-md-2">
                     <a id="gifts" href="{{ url_for('web.my_gifts') }}"
                        class="flex-vertical-hor-center">
                         <img src="{{ url_for('static', filename='images/gift.png') }}"/>
-                        <span>赠送清单</span>
+                        <span>仓库清单</span>
                     </a>
                 </div>
                 <div class="col-md-2">
@@ -61,7 +65,7 @@
                     <a id="pending" href="{{ url_for('web.pending') }}"
                        class="flex-vertical-hor-center">
                         <img src="{{ url_for('static', filename='images/fish.png') }}"/>
-                        <span>烟花</span>
+                        <span>交易清单</span>
                     </a>
                 </div>
             </div>
@@ -97,7 +101,7 @@
     {% block content %} {% endblock %}
 </div>
 <div id="footer" class="flex-hor-center">
-    <span>© 2018-2020 book.imoonclub.cn created by 如烟</span>
+    <span>© 2018-2021 book.inoni.site created by 如烟</span>
 </div>
 </body>
 

@@ -6,7 +6,7 @@ app = createApp()
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=81)
+    app.run(host='localhost', port=5001)
 
 
 '''
