@@ -7,6 +7,7 @@ from app.forms.book import SearchForm
 from app.libs import utils
 from app.models.gift import Gift
 from app.models.wish import Wish
+from app.models.book import Book  # 不可缺少，orm读取这里的model建立表
 from app.spider.ruyan_book import RuYanBook
 from app.view_models.book import BookViewModel, BookCollection
 from app.view_models.trade import TradeInfo

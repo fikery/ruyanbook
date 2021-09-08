@@ -7,7 +7,7 @@ class BookViewModel:
         self.title = book['title']
         self.publisher = book['publisher']
         self.isbn = book['isbn']
-        self.author = '、'.join(book['author'])
+        self.author = book['author']
         self.pages = book['pages'] or ''
         self.price = book['price']
         self.summary = book['summary'] or ''
@@ -72,7 +72,7 @@ class _BookViewModel:
         book = {
             'title': data['title'],
             'publisher': data['publisher'],
-            'author': '、'.join(data['author']),
+            'author': data['author'],
             'pages': data['pages'] or '',
             'price': data['price'],
             'summary': data['summary'] or '',

@@ -32,7 +32,7 @@ def save_to_gifts(isbn):
             current_user.beans += current_app.config['BEANS_UPLOAD_ONE_BOOK']
             db.session.add(gift)
     else:
-        flash('本书已在赠送清单或者心愿清单中，请勿重复添加')
+        flash('本书已在仓库清单或者心愿清单中，请勿重复添加')
     return redirect(url_for('web.book_detail', isbn=isbn))
 
 

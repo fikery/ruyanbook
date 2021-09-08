@@ -6,6 +6,7 @@ from app.models.base import db
 login_manager = LoginManager()
 mail = Mail()
 
+
 def createApp():
     app = Flask(__name__)
     app.config.from_object('app.setting')
@@ -24,5 +25,5 @@ def createApp():
 
 
 def registerBlueprint(app):
-    from app.web.book import web
+    from app.web import web
     app.register_blueprint(web)

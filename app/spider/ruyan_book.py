@@ -1,7 +1,8 @@
 import json
 import os
-
+from app import db
 from app.libs.bhttp import HTTP
+from app.models.book import Book
 
 
 class RuYanBook:
@@ -21,22 +22,34 @@ class RuYanBook:
         self.tpl = os.path.join(os.path.dirname(__file__), 'book_tpl.json')
 
     def searchByIsbn(self, isbn):
-        url = self.isbnUrl.format(isbn)
-        result = HTTP.douban_get_isbn(url)
-
-        # with open(self.tpl, 'r') as f:
-        #     result_list = json.load(f)
-        # result = [x for x in result_list if isbn in x.get('isbn')]
-        # result = result[0] if result else None
-
-        self.__fillSingle(result)
-
         # 设置缓存的思想
-        # book = query_from_mysql(isbn)
-        # if book:
-        #     return book
-        # else:
-        #     save(result)
+        book = self.query_from_mysql(isbn)
+        if book:
+            self.__fillSingle(book)
+        else:
+            url = self.isbnUrl.format(isbn)
+            result = HTTP.douban_get_isbn(url)
+
+            # with open(self.tpl, 'r') as f:
+            #     result_list = json.load(f)
+            # result = [x for x in result_list if isbn in x.get('isbn')]
+            # result = result[0] if result else None
+
+            self.__fillSingle(result)
+
+            with db.auto_commit():
+                book = Book()
+                book.title = result['title']
+                book.author = result['author']
+                book.publisher = result['publisher']
+                book.pubdate = result['pubdate']
+                book.pages = result['pages']
+                book.price = result['price']
+                book.binding = result['binding']
+                book.isbn = result['isbn']
+                book.summary = result['summary']
+                book.image = result['image']
+                db.session.add(book)
 
     def __fillSingle(self, data):
         if data:
@@ -44,7 +57,7 @@ class RuYanBook:
             self.books.append(data)
 
     def searchByKey(self, keyWord, page):
-        url = self.keyWordUrl.format(keyWord, self.per_page, self.per_page*(int(page)-1))
+        url = self.keyWordUrl.format(keyWord, self.per_page, self.per_page * (int(page) - 1))
         result = HTTP.douban_get_key(url)
 
         # with open(self.tpl, 'r') as f:
@@ -64,3 +77,12 @@ class RuYanBook:
     @property
     def first(self):
         return self.books[0] if self.total > 0 else None
+
+    @staticmethod
+    def query_from_mysql(isbn):
+        book = Book.query.filter_by(isbn=isbn).first()
+        if not book:
+            return
+        # 将book对象转为dict
+        book_dict = {c.name: getattr(book, c.name) for c in book.__table__.columns}
+        return book_dict
