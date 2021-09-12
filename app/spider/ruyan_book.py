@@ -23,7 +23,7 @@ class RuYanBook:
 
     def searchByIsbn(self, isbn):
         # 设置缓存的思想
-        book = self.query_from_mysql(isbn)
+        book = self.query_from_mysql(isbn=isbn)
         if book:
             self.__fillSingle(book)
         else:
@@ -51,23 +51,26 @@ class RuYanBook:
                 book.image = result['image']
                 db.session.add(book)
 
-    def __fillSingle(self, data):
-        if data:
+    def __fillSingle(self, book):
+        if book:
             self.total = 1
-            self.books.append(data)
+            self.books.append(book.get('books')[0])
 
     def searchByKey(self, keyWord, page):
-        url = self.keyWordUrl.format(keyWord, self.per_page, self.per_page * (int(page) - 1))
-        result = HTTP.douban_get_key(url)
-
-        # with open(self.tpl, 'r') as f:
-        #     result_list = json.load(f)
-        # books = [x for x in result_list if keyWord in x.get('title')]
-        # result = {
-        #     'total': len(books),
-        #     'books': books
-        # }
-        self.__fillCollection(result)
+        books = self.query_from_mysql(key=keyWord)
+        if books:
+            self.__fillCollection(books)
+        else:
+            url = self.keyWordUrl.format(keyWord, self.per_page, self.per_page * (int(page) - 1))
+            result = HTTP.douban_get_key(url)
+            # with open(self.tpl, 'r') as f:
+            #     result_list = json.load(f)
+            # books = [x for x in result_list if keyWord in x.get('title')]
+            # result = {
+            #     'total': len(books),
+            #     'books': books
+            # }
+            self.__fillCollection(result)
 
     def __fillCollection(self, data):
         if data:
@@ -79,10 +82,18 @@ class RuYanBook:
         return self.books[0] if self.total > 0 else None
 
     @staticmethod
-    def query_from_mysql(isbn):
-        book = Book.query.filter_by(isbn=isbn).first()
-        if not book:
+    def query_from_mysql(isbn=None, key=None):
+        if isbn:
+            book = Book.query.filter_by(isbn=isbn).first()
+            books = [book]
+        else:
+            books = Book.query.filter(Book.title.like('%{}%'.format(key))).all()
+        if not books:
             return
         # 将book对象转为dict
-        book_dict = {c.name: getattr(book, c.name) for c in book.__table__.columns}
-        return book_dict
+        book_dict_list = [{c.name: getattr(book, c.name) for c in book.__table__.columns} for book in books]
+        res = {
+            'total': 1,
+            'books': book_dict_list
+        }
+        return res

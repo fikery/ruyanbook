@@ -14,7 +14,7 @@ class HTTP:
     @staticmethod
     def douban_get_key(url, return_json=True):
         # options = webdriver.ChromeOptions()
-        # options.add_argument('--headless')
+        # options.add_argument("--headless")
         # browser = webdriver.Chrome(chrome_options=options)
         browser = webdriver.Chrome()
         browser.get(url)
